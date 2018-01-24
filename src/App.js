@@ -36,9 +36,9 @@ class BooksApp extends Component {
         })
     })
 
-  // addBookToShelf = (book, shelf) => {
-  //   BooksAPI.update(book, shelf)
-  // }
+  addBookToShelf = (book, shelf) => {
+    BooksAPI.update(book, shelf)
+  }
 
   render() {
     return (
