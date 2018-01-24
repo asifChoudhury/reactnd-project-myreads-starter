@@ -24,19 +24,16 @@ class BooksApp extends Component {
     })
   }
 
-  updateShelf = ((event, book) => {
-        BooksAPI.update(book, event.target.value).then((shelf) => {
-            console.log(shelf)
+  updateShelf = ((event, selectedBook) => {
+        BooksAPI.update(selectedBook, event.target.value).then((shelf) => {
 
-            this.setState({
-                books: shelf.currentlyReading.concat(shelf.wantToRead, shelf.read),
-                currentlyReading: shelf.currentlyReading,
-                wantToRead: shelf.wantToRead,
-                read: shelf.read
-            })
-
+            this.setState((state) => ({
+                 currentlyReading: state.books.filter((book) => shelf.currentlyReading.includes(book.id)),
+                 wantToRead: state.books.filter((book) => shelf.wantToRead.includes(book.id)),
+                 read: state.books.filter((book) => shelf.read.includes(book.id)),
+                 books: state.currentlyReading.concat(state.wantToRead, state.read)
+            }))
         })
-        console.log(this.state.books)
     })
 
   // addBookToShelf = (book, shelf) => {
