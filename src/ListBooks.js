@@ -1,12 +1,14 @@
 import React, { Component } from 'react'
 import { Link } from 'react-router-dom'
-import * as BooksAPI from './BooksAPI'
 
 class ListBooks extends Component {
 
     render() {
-        const {books, currentlyReading, wantToRead, read, moveBook} = this.props
+        const {currentlyReading, wantToRead, read, moveBook} = this.props
         console.log(currentlyReading)
+        console.log(wantToRead)
+        console.log(read)
+
         return (
             <div className="list-books">
                 <div className="list-books-title">

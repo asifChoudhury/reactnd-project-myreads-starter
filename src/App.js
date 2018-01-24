@@ -53,7 +53,7 @@ class BooksApp extends Component {
           />
         )} />
 
-        <Route exact path='/search' render={({history}) => (
+        <Route path='/search' render={({history}) => (
           <SearchBooks
             onAddBookToShelf={(book, shelf) => {
               this.addBookToShelf(book, shelf)
