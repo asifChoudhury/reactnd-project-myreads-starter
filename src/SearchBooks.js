@@ -8,27 +8,55 @@ class SearchBooks extends Component {
         searchResults: []
     }
 
-    updateQuery = (query) => {
-        this.setState({
-            query: query.trim()
-        })
+    handleInput = (inputValue) => {
+        // set query
+        this.updateQuery(inputValue)
 
-        if(this.state.query) {
-            BooksAPI.search(this.state.query).then(books => {
-                if(books !== null && books !== undefined) {
-                    this.setState({searchResults: books})
+        // get search results
+        this.getSearchResults(inputValue)
+
+    }
+
+    // set query
+    updateQuery = (inputValue) => {
+        this.setState({query: inputValue.trim()})
+    }
+
+    // save search results into an array
+    storeBooksFromSearch = (booksFound) => {
+        this.props.updateSearchResults(booksFound)
+    }
+
+    // call BooksAPI with the user typed query
+    getSearchResults = (query) => {
+        if(query) {
+            BooksAPI.search(query).then(booksInSearchResult => {
+                if(booksInSearchResult.length) {
+                    this.props.books.map((shelvedBook) => {
+                        booksInSearchResult.map((bookInSearchResult) => {
+                            bookInSearchResult.shelf = 'none'
+                            if(bookInSearchResult.id === shelvedBook.id) {
+                                console.log("On Shelf: " + shelvedBook.title + ": " + shelvedBook.shelf)
+                                console.log("Search result: " + bookInSearchResult.title + ": " + bookInSearchResult.shelf)
+                                bookInSearchResult.shelf = shelvedBook.shelf
+                                console.log("Search result: " + bookInSearchResult.title + ": " + bookInSearchResult.shelf)
+                            }
+                            if(!bookInSearchResult.imageLinks) {
+                                bookInSearchResult.imageLinks = 'none'
+                            }
+                        })
+                    })
+                    this.storeBooksFromSearch(booksInSearchResult)
                 }
-            }).catch(error => console.log(error))
+            })
         }
     }
 
     render() {
-        const {query, searchResults} = this.state
-        const{moveBook} = this.props
-
-        console.log(searchResults)
+        const{moveBook, searchResults} = this.props
 
         return (
+
             <div className="search-books">
                 <div className="search-books-bar">
                     <Link to='/' className="close-search">Close</Link>
@@ -37,7 +65,7 @@ class SearchBooks extends Component {
                             type="text"
                             placeholder="Search by title or author"
                             value={this.state.query}
-                            onChange={(event) => this.updateQuery(event.target.value)}
+                            onChange={(event) => this.handleInput(event.target.value)}
                         />
                     </div>
                 </div>
@@ -49,7 +77,7 @@ class SearchBooks extends Component {
                                     <div className="book-top">
                                         <div className="book-cover" style={{ width: 128, height: 193, backgroundImage: `url(${book.imageLinks.thumbnail})` }}></div>
                                         <div className="book-shelf-changer">
-                                            <select value="none" onChange={(event) => moveBook(event, book)}>
+                                            <select value={book.shelf} onChange={(event) => moveBook(event, book)}>
                                                 <option value="none" disabled>Move to...</option>
                                                 <option value="currentlyReading">Currently Reading</option>
                                                 <option value="wantToRead">Want to Read</option>
